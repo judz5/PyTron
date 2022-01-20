@@ -32,9 +32,17 @@ class bike():
         self.rect = pygame.Rect(self.x, self.y, 15, 15)
         pygame.draw.rect(win, self.color, self.rect)
 
+def draw_text(text, font, color, surface, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect(center=(win.get_width()/2, y))
+    #textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
 # Game loop.
 def game():
     global p1_path, p2_path
+    p1_path.clear()
+    p2_path.clear()
     # add variables
     player_1 = bike(win.get_width()/4,win.get_height()/2, 5, 0, color.p1)
     player_2 = bike(win.get_width()-win.get_width()/4, win.get_height()/2, -5, 0, color.p2)
@@ -56,29 +64,29 @@ def game():
                     pygame.quit()
                     sys.exit()
                 # -----------------
-                if event.key == K_w:
+                if event.key == K_w and player_1.dy == 0:
                     player_1.dy = -5
                     player_1.dx = 0               
-                if event.key == K_s:
+                if event.key == K_s and player_1.dy == 0:
                     player_1.dy = 5
                     player_1.dx = 0
-                if event.key == K_a:
+                if event.key == K_a and player_1.dx == 0:
                     player_1.dx = -5
                     player_1.dy = 0
-                if event.key == K_d:
+                if event.key == K_d and player_1.dx == 0:
                     player_1.dx = 5
                     player_1.dy = 0
                 # -----------------
-                if event.key == K_UP:
+                if event.key == K_UP and player_2.dy == 0:
                     player_2.dy = -5
                     player_2.dx = 0
-                if event.key == K_DOWN:
+                if event.key == K_DOWN and player_2.dy == 0:
                     player_2.dy = 5
                     player_2.dx = 0
-                if event.key == K_LEFT:
+                if event.key == K_LEFT and player_2.dx == 0:
                     player_2.dx = -5
                     player_2.dy = 0
-                if event.key == K_RIGHT:
+                if event.key == K_RIGHT and player_2.dx == 0:
                     player_2.dx = 5
                     player_2.dy = 0
                 # -----------------
@@ -93,15 +101,56 @@ def game():
         
         for p in p1_path:
             pygame.draw.rect(win, color.p1, p)
-            if p.colliderect(player_1.rect):
+       
+        x = 0
+        while(x<len(p1_path)):
+            if(x<(len(p1_path)-5)):
+                if(p1_path[x].colliderect(player_1.rect)):
+                    print("Blue hit self")
+                    pygame.quit()
+                    sys.exit()
+            if(p2_path[x].colliderect(player_1.rect)):
+                print("Blue hit pink")
                 pygame.quit()
                 sys.exit()
+            x = x + 1
 
-            
         for p in p2_path:
             pygame.draw.rect(win, color.p2, p)
 
+        x = 0
+        while(x<len(p2_path)):
+            if(x<(len(p2_path)-5)):
+                if(p2_path[x].colliderect(player_2.rect)):
+                    print("pink hit self")
+                    pygame.quit()
+                    sys.exit()
+            if(p1_path[x].colliderect(player_2.rect)):
+                print("pink hit blue")
+                pygame.quit()
+                sys.exit()
+            x = x + 1
+
         pygame.display.flip()
         fpsClock.tick(fps)
+
+class Button():
+    def __init__(self, height, width, y, text):
+        self.height = height
+        self.width = width
+        self.y = y
+        self.rect = pygame.Rect(250-(self.width/2), self.y, self.width, self.height)
+        self.text = text
+        self.color = (255,255,255)
+
+    def draw_button(self):
+        pygame.draw.rect(win, self.color, self.rect)
+
+    def add_text(self):
+        draw_text(self.text, button_Font, (0,0,0), win, self.rect.centery)
+
+def menu():
+    pass
+
 
 game()
