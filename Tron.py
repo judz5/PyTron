@@ -150,7 +150,10 @@ class Button():
         draw_text(self.text, button_Font, (0,0,0), win, self.rect.centery)
 
 def menu():
-    pass
+    win.fill((0,0,0))
+
+    while True:
+        
 
 
 game()
