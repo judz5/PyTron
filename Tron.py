@@ -2,14 +2,20 @@ import pygame, sys, os
 from pygame.locals import *
  
 pygame.init()
+pygame.font.init()
  
 fps = 60
 fpsClock = pygame.time.Clock()
 
 p1_path = []
 p2_path = []
+
+particles = []
  
 win = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+
+mainFont = pygame.font.Font('dogicapixel.ttf', 100)
+normFont = pygame.font.Font('dogicapixel.ttf', 50)
 
 class color():
     p1 = (64,207,255)
@@ -106,13 +112,9 @@ def game():
         while(x<len(p1_path)):
             if(x<(len(p1_path)-5)):
                 if(p1_path[x].colliderect(player_1.rect)):
-                    print("Blue hit self")
-                    pygame.quit()
-                    sys.exit()
+                    deathScreen(False)
             if(p2_path[x].colliderect(player_1.rect)):
-                print("Blue hit pink")
-                pygame.quit()
-                sys.exit()
+                deathScreen(False)
             x = x + 1
 
         for p in p2_path:
@@ -122,38 +124,54 @@ def game():
         while(x<len(p2_path)):
             if(x<(len(p2_path)-5)):
                 if(p2_path[x].colliderect(player_2.rect)):
-                    print("pink hit self")
-                    pygame.quit()
-                    sys.exit()
+                    deathScreen(True)
             if(p1_path[x].colliderect(player_2.rect)):
-                print("pink hit blue")
-                pygame.quit()
-                sys.exit()
+                deathScreen(True)
             x = x + 1
 
-        pygame.display.flip()
+        pygame.display.update()
         fpsClock.tick(fps)
 
-class Button():
-    def __init__(self, height, width, y, text):
-        self.height = height
-        self.width = width
-        self.y = y
-        self.rect = pygame.Rect(250-(self.width/2), self.y, self.width, self.height)
-        self.text = text
-        self.color = (255,255,255)
 
-    def draw_button(self):
-        pygame.draw.rect(win, self.color, self.rect)
-
-    def add_text(self):
-        draw_text(self.text, button_Font, (0,0,0), win, self.rect.centery)
 
 def menu():
     win.fill((0,0,0))
 
     while True:
-        
+        win.fill((0,0,0))
 
+        draw_text('PyTron', mainFont, color.p1, win, (win.get_height()/3)+(win.get_height()/9))
+        draw_text('Press Any Key To Start', normFont, color.p2, win, (win.get_height()/3)+(win.get_height()/5))
 
-game()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                game()
+
+        pygame.display.update()
+        fpsClock.tick(fps)
+
+def deathScreen(blueWon):
+    win.fill((0,0,0))
+
+    while True:
+        win.fill((0,0,0))
+
+        if(blueWon):
+            draw_text('BLUE WON!', mainFont, color.p1, win, win.get_height()/2)
+        else:
+            draw_text('PINK WON!', mainFont, color.p2, win, win.get_height()/2)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                menu()
+
+        pygame.display.update()
+        fpsClock.tick(fps)
+
+menu()
