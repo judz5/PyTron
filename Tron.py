@@ -29,8 +29,13 @@ class bike():
         self.dy = dy
         self.color = color
         self.rect = pygame.Rect(self.x,self.y,15,15)
+        self.boost = False
+        self.boostLeft = 100
     
     def update(self):
+        if(self.boost and not (-10 in (self.dx, self.dy)) and not(10 in (self.dx, self.dy))):
+            self.dx = self.dx * 2
+            self.dy = self.dy * 2
         self.x += self.dx
         self.y += self.dy
 
@@ -54,6 +59,7 @@ def game():
     player_2 = bike(win.get_width()-win.get_width()/4, win.get_height()/2, -5, 0, color.p2)
 
     check = False
+
 
     while True:
         win.fill((0, 0, 0))
@@ -82,6 +88,8 @@ def game():
                 if event.key == K_d and player_1.dx == 0:
                     player_1.dx = 5
                     player_1.dy = 0
+                if event.key == K_SPACE and player_1.boostLeft > 0:
+                    player_1.boost = True
                 # -----------------
                 if event.key == K_UP and player_2.dy == 0:
                     player_2.dy = -5
@@ -95,7 +103,14 @@ def game():
                 if event.key == K_RIGHT and player_2.dx == 0:
                     player_2.dx = 5
                     player_2.dy = 0
+                if event.key == K_RSHIFT and player_2.boostLeft>0:
+                    player_2.boost = True
                 # -----------------
+            if event.type == KEYUP:
+                if event.key == K_SPACE:
+                    player_1.boost = False
+                if event.key == K_RSHIFT:
+                    player_2.boost = False
         
         # Update.
         player_1.update()
