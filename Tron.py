@@ -60,7 +60,6 @@ def game():
 
     check = False
 
-
     while True:
         win.fill((0, 0, 0))
     
@@ -184,7 +183,8 @@ def deathScreen(blueWon):
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
-                menu()
+                if event.key == K_SPACE:
+                    menu()
 
         pygame.display.update()
         fpsClock.tick(fps)
