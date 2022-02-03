@@ -59,7 +59,12 @@ def game():
     player_2 = bike(win.get_width()-win.get_width()/4, win.get_height()/2, -5, 0, color.p2)
 
     check = False
-
+    
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+    joystick2 = pygame.joystick.Joystick(1)
+    joystick2.init()
+    
     while True:
         win.fill((0, 0, 0))
     
@@ -75,41 +80,41 @@ def game():
                     pygame.quit()
                     sys.exit()
                 # -----------------
-                if event.key == K_w and player_1.dy == 0:
+                if joystick.get_axis(1) > .5:
                     player_1.dy = -5
                     player_1.dx = 0               
-                if event.key == K_s and player_1.dy == 0:
+                if joystick.get_axis(1) < -.5:
                     player_1.dy = 5
                     player_1.dx = 0
-                if event.key == K_a and player_1.dx == 0:
+                if joystick.get_axis(0) > .5:
                     player_1.dx = -5
                     player_1.dy = 0
-                if event.key == K_d and player_1.dx == 0:
+                if joystick.get_axis(0) < -.5:
                     player_1.dx = 5
                     player_1.dy = 0
-                if event.key == K_SPACE and player_1.boostLeft > 0:
-                    player_1.boost = True
+                # if event.key == K_SPACE and player_1.boostLeft > 0:
+                #     player_1.boost = True
                 # -----------------
-                if event.key == K_UP and player_2.dy == 0:
+                if joystick2.get_axis(1) > .5:
                     player_2.dy = -5
                     player_2.dx = 0
-                if event.key == K_DOWN and player_2.dy == 0:
+                if joystick2.get_axis(1) < -.5:
                     player_2.dy = 5
                     player_2.dx = 0
-                if event.key == K_LEFT and player_2.dx == 0:
+                if joystick2.get_axis(0) > .5:
                     player_2.dx = -5
                     player_2.dy = 0
-                if event.key == K_RIGHT and player_2.dx == 0:
+                if joystick.get_axis(0) < -.5:
                     player_2.dx = 5
                     player_2.dy = 0
-                if event.key == K_RSHIFT and player_2.boostLeft>0:
-                    player_2.boost = True
+                # if event.key == K_RSHIFT and player_2.boostLeft>0:
+                #     player_2.boost = True
                 # -----------------
-            if event.type == KEYUP:
-                if event.key == K_SPACE:
-                    player_1.boost = False
-                if event.key == K_RSHIFT:
-                    player_2.boost = False
+            # if event.type == KEYUP:
+            #     if event.key == K_SPACE:
+            #         player_1.boost = False
+            #     if event.key == K_RSHIFT:
+            #         player_2.boost = False
         
         # Update.
         player_1.update()
@@ -151,24 +156,36 @@ def game():
 def menu():
     win.fill((0,0,0))
 
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+
     while True:
         win.fill((0,0,0))
 
         draw_text('PyTron', mainFont, color.p1, win, (win.get_height()/3)+(win.get_height()/9))
         draw_text('Press Any Key To Start', normFont, color.p2, win, (win.get_height()/3)+(win.get_height()/5))
 
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                game()
+        # for event in pygame.event.get():
+        #     if event.type == QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     if event.type == KEYDOWN:
+        #         game()
+
+        if joystick.get_button(4):
+            game()
+        if joystick.get_button(5):
+            pygame.quit()
+            sys.exit()
 
         pygame.display.update()
         fpsClock.tick(fps)
 
 def deathScreen(blueWon):
     win.fill((0,0,0))
+
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
 
     while True:
         win.fill((0,0,0))
@@ -178,13 +195,19 @@ def deathScreen(blueWon):
         else:
             draw_text('PINK WON!', mainFont, color.p2, win, win.get_height()/2)
 
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    menu()
+        # for event in pygame.event.get():
+        #     if event.type == QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     if event.type == KEYDOWN:
+        #         if event.key == K_SPACE:
+        #             menu()
+
+        if(joystick.get_button(4)):
+            menu()
+        if(joystick.get_buton(5)):
+            pygame.quit()
+            sys.exit()
 
         pygame.display.update()
         fpsClock.tick(fps)
